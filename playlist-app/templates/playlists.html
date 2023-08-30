@@ -4,6 +4,10 @@
 
 <h1>See all the playlists!</h1>
 
+{% for message in get_flashed_messages() %}
+<div>{{ message }}</div>
+{% endfor %}
+
 <ul>
 {% for playlist in playlists %}
   <li>

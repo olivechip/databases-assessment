@@ -4,6 +4,10 @@
 
 <h1>Check out the songs!</h1>
 
+{% for message in get_flashed_messages() %}
+<div>{{ message }}</div>
+{% endfor %}
+
 <ul>
 {% for song in songs %}
   <li><a href="/songs/{{song.id}}">{{ song.title }}</a></li>
