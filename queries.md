@@ -94,14 +94,19 @@ SELECT title, COUNT(stars.id) FROM movies JOIN roles ON movies.id = roles.movie_
 12. The first name, last name, and average runtime of the five stars whose movies have the longest average.
 
 ```
-
+SELECT first_name, last_name, AVG(runtime) AS average_runtime FROM stars JOIN roles ON stars.id = roles.star_id JOIN movies on movies.id = roles.movie_id GROUP BY first_name, last_name ORDER BY average_runtime desc LIMIT 5;
 ```
 
 13. The first name, last name, and average runtime of the five
     stars whose movies have the longest average, among stars who have more than one movie in the database.
 
+```
+SELECT first_name, last_name, AVG(runtime) AS average_runtime FROM stars JOIN roles ON stars.id = roles.star_id JOIN movies on movies.id = roles.movie_id GROUP BY first_name, last_name HAVING COUNT(roles.star_id) > 1 ORDER BY average_runtime desc LIMIT 5;
+```
+
 14. The titles of all movies that don't feature any stars in our
     database.
+
 
 15. The first and last names of all stars that don't appear in any movies in our database.
 
