@@ -4,7 +4,7 @@ from models import db, connect_db, Playlist, Song, PlaylistSong
 from forms import NewSongForPlaylistForm, SongForm, PlaylistForm
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///playlist-app'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///playlist_app'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
-
+app.debug = True
 
 @app.route("/")
 def root():
@@ -58,7 +58,7 @@ def add_playlist():
     form = PlaylistForm()
 
     if form.validate_on_submit():
-        name = form.playlist.data
+        name = form.name.data
         desc = form.description.data
 
         new_playlist = Playlist(name=name, description=desc)
@@ -97,12 +97,10 @@ def add_song():
 
     form = SongForm()
 
-    try:
-        if form.validate_on_submit():
-            title = form.title.data
-            artist = form.artist.data
-    except:
-        print('error')
+    if form.validate_on_submit():
+        title = form.title.data
+        artist = form.artist.data
+
 
         new_song = Song(title=title, artist=artist)
         db.session.add(new_song)
@@ -123,13 +121,12 @@ def add_song_to_playlist(playlist_id):
     # Restrict form to songs not already on this playlist
 
     curr_on_playlist = [song.id for song in playlist.songs]
-    form.song.choices = Song.query.filter(Song.id.notin_(curr_on_playlist)).all()
+    form.song.choices = db.session.query(Song.id, Song.title).filter(Song.id.notin_(curr_on_playlist)).all()
 
     if form.validate_on_submit():
-        add = form.song.data
-
-        pl_song = PlaylistSong(playlist_id=playlist_id, song_id=add)
-        db.session.add(pl_song)
+        print(f'-------------------------------------------{form.song.data}-------------')
+        new_pl_song = PlaylistSong(playlist_id=playlist_id, song_id=form.song.data[1])
+        db.session.add(new_pl_song)
         db.session.commit()
 
         flash('Song successfully added to playlist.')

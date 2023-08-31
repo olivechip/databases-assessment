@@ -2,20 +2,28 @@
 
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-<div>{{ message }}</div>
-{% endfor %}
-
 <div class="jumbotron">
-  <h1>{{ playlist.name }}!</h1>
+  <h1>{{ playlist.name }}</h1>
   {% if playlist.description %}
-  <p class="lead">{{ playlist.description }}</p>
+  <p class="lead">&ndash; {{ playlist.description }}</p>
   {% endif %}
 </div>
 
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success" role="alert">{{ message }}</div>
+{% endfor %}
 
-<div class="text-danger">
-  SHOW ALL OF THE SONGS IN THIS PLAYLIST HERE
+<div>
+  <h2>Songs in the Playlist:</h2>
+  {% if not playlist.songs %}
+    <p class="text-danger">There are no songs in this playlist!</p>
+  {% else %}
+    <ul>
+        {% for song in playlist.songs %}
+            <li>{{ song.title }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
 </div>
 
 <p>

@@ -3,12 +3,26 @@
 {% block content %}
 
 <div class="jumbotron">
-  <h1>{{ song.title }}!</h1>
+  <h1>{{ song.title }}</h1>
   <p class="lead">&ndash; {{ song.artist }}</p>
 </div>
 
-<ul>
-  DISPLAY ALL OF THE PLAYLISTS THAT THIS SONG IS A PART OF
-</ul>
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success" role="alert">{{ message }}</div>
+{% endfor %}
+
+<div>
+  <h2>Playlists with this Song:</h2>
+  {% if not song.playlists %}
+    <p class="text-danger">There are no playlists with this song!</p>
+  {% else %}
+    <ul>
+        {% for playlist in song.playlists %}
+            <li><a href="/playlists/{{ playlist.id }}">{{ playlist.name }}</a></li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+
 
 {% endblock %}
